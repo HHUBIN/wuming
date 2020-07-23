@@ -111,7 +111,7 @@
             class="avatar-uploader"
             action="http://www.hhhbin.com:8888/upload"
             :show-file-list="false"
-            :on-success="handlebgSuccess">
+            :on-success="handleSuccess">
             <img v-if="registForm.bgUrl" :src="registForm.bgUrl" class="editor-avatar"/>
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
@@ -265,7 +265,7 @@ export default {
     handleAvatarSuccess (res, file) {
       this.registForm.imgUrl = res.data
     },
-    handlebgSuccess (res, file) {
+    handleSuccess (res, file) {
       this.registForm.bgUrl = res.data
     },
     async editorInfo () {

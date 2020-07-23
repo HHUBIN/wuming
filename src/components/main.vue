@@ -5,8 +5,23 @@
       <div class="head">
         <el-row>
           <el-col :span="5"></el-col>
-          <el-col :span="4" :xs="0" :sm="4" :md="4" :lg="4" :xl="4">
-            <el-link type="success" href="http://www.hhhbin.com" class="park" :underline="false"><h1>一个不知名社区</h1></el-link>
+          <el-col :span="0.5">
+            <el-link
+              type="success"
+              href="http://www.hhhbin.com"
+              :underline="false"
+            >
+              <img class="logo" src="../assets/img/logo.jpg" />
+            </el-link>
+          </el-col>
+            <el-col :span="4">
+            <el-link
+              type="success"
+              href="http://www.hhhbin.com"
+              :underline="false"
+            >
+              <h1 style="padding-top:-10px">社区</h1>
+            </el-link>
           </el-col>
           <el-col :span="6">
             <!-- <div style="margin-top: 7px;" class="park">
@@ -20,15 +35,31 @@
             <!-- <div class="el-icon-message-solid"></div> -->
           </el-col>
           <el-col :span="1" v-if="loginStatus">
-            <router-link :to="'/'+userInfo.name">
-            <span class="el-icon-message-solid park"></span>
+            <router-link :to="'/' + userInfo.name">
+              <span class="el-icon-message-solid park"></span>
             </router-link>
-            <el-badge :value="notice" class="item" v-if="notice != 0"></el-badge>
+            <el-badge
+              :value="notice"
+              class="item"
+              v-if="notice != 0"
+            ></el-badge>
           </el-col>
           <el-col :span="1" v-if="loginStatus" class="head-img">
-            <router-link :to="'/'+userInfo.name">
-              <el-avatar shape="square" :size="38" src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" v-if="userInfo.imgUrl ==null" class="park"></el-avatar>
-              <el-avatar shape="square" :size="38" :src="userInfo.imgUrl" class="park" v-else>
+            <router-link :to="'/' + userInfo.name">
+              <el-avatar
+                shape="square"
+                :size="38"
+                src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019"
+                v-if="userInfo.imgUrl == null"
+                class="park"
+              ></el-avatar>
+              <el-avatar
+                shape="square"
+                :size="38"
+                :src="userInfo.imgUrl"
+                class="park"
+                v-else
+              >
               </el-avatar>
             </router-link>
           </el-col>
@@ -37,9 +68,15 @@
               type="primary"
               size="small"
               class="head-but park"
-              @click="dialogVisible=!dialogVisible"
-            >登 录</el-button>
-            <el-button size="small" class="head-but park" @click="RegistDialogVisible =true">注 册</el-button>
+              @click="dialogVisible = !dialogVisible"
+              >登 录</el-button
+            >
+            <el-button
+              size="small"
+              class="head-but park"
+              @click="RegistDialogVisible = true"
+              >注 册</el-button
+            >
           </el-col>
         </el-row>
       </div>
@@ -65,7 +102,11 @@
     </el-container>
 
     <!-- 登录对话框 -->
-    <el-dialog :visible.sync="dialogVisible" width="25%" :before-close="handleClose">
+    <el-dialog
+      :visible.sync="dialogVisible"
+      width="25%"
+      :before-close="handleClose"
+    >
       <div class="login-input">
         <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules">
           <el-form-item prop="name">
@@ -87,7 +128,7 @@
           </el-form-item>
           <div>其他方式授权登录：</div>
           <el-button class="github-button" @click="href">
-          <img src="../assets/img/social_github.png" class="github-img" />
+            <img src="../assets/img/social_github.png" class="github-img" />
           </el-button>
         </el-form>
       </div>
@@ -103,28 +144,52 @@
       width="40%"
       :before-close="registHandleClose"
       center
-      :status-icon=true
+      :status-icon="true"
     >
-      <el-form :model="registForm" :rules="registRules" ref="registFormRef" label-width="80px">
+      <el-form
+        :model="registForm"
+        :rules="registRules"
+        ref="registFormRef"
+        label-width="80px"
+      >
         <el-form-item label="用户名" prop="name">
-          <el-input v-model="registForm.name" placeholder="长度在 1 到 20 个字符"></el-input>
+          <el-input
+            v-model="registForm.name"
+            placeholder="长度在 1 到 20 个字符"
+          ></el-input>
         </el-form-item>
         <el-form-item label="性别">
           <el-radio v-model="registForm.gender" label="0">男</el-radio>
           <el-radio v-model="registForm.gender" label="1">女</el-radio>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input type="password" v-model="registForm.password" autocomplete="off" placeholder="长度在 6 到 20 个字符"></el-input>
+          <el-input
+            type="password"
+            v-model="registForm.password"
+            autocomplete="off"
+            placeholder="长度在 6 到 20 个字符"
+          ></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="checkPass">
-          <el-input type="password" v-model="registForm.checkPass" autocomplete="off" placeholder="长度在 6 到 20 个字符"></el-input>
+          <el-input
+            type="password"
+            v-model="registForm.checkPass"
+            autocomplete="off"
+            placeholder="长度在 6 到 20 个字符"
+          ></el-input>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="registForm.email"></el-input>
         </el-form-item>
-         <el-form-item prop="emailCode">
+        <el-form-item prop="emailCode">
           <el-input placeholder="验证码" v-model="registForm.emailCode">
-            <el-button slot="append" icon="el-icon-s-promotion" @click="sendEmailCode" type="text">点击发送验证码</el-button>
+            <el-button
+              slot="append"
+              icon="el-icon-s-promotion"
+              @click="sendEmailCode"
+              type="text"
+              >点击发送验证码</el-button
+            >
           </el-input>
         </el-form-item>
         <el-form-item label="个人简介">
@@ -174,7 +239,8 @@ export default {
         imgUrl: '',
         token: ''
       },
-      githubUrl: 'https://github.com/login/oauth/authorize?client_id=52787f4def1351a6ae25&state=0&redirect_uri=http://www.hhhbin.com:8888/callback',
+      githubUrl:
+        'https://github.com/login/oauth/authorize?client_id=52787f4def1351a6ae25&state=0&redirect_uri=http://www.hhhbin.com:8888/callback',
       search: '',
       dialogVisible: false,
       RegistDialogVisible: false,
@@ -219,7 +285,11 @@ export default {
         ],
         email: [
           { required: true, message: '请输入邮箱地址', trigger: 'blur' },
-          { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }
+          {
+            type: 'email',
+            message: '请输入正确的邮箱地址',
+            trigger: ['blur', 'change']
+          }
         ],
         emailCode: [
           { required: true, message: '请输入验证码', trigger: 'blur' }
@@ -232,7 +302,9 @@ export default {
   },
   methods: {
     async getNoticeCount () {
-      const { data: res } = await this.$http.get('noticecount/' + this.userInfo.id)
+      const { data: res } = await this.$http.get(
+        'noticecount/' + this.userInfo.id
+      )
       if (res.code === 200) {
         this.notice = res.data
         console.log(res.data)
@@ -270,16 +342,28 @@ export default {
     },
     href () {
       const that = this
-      window.open(this.githubUrl, 'newwindow', 'height=500, width=500, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no')
-      window.addEventListener('message', function (e) {
-        console.log(e)
-        if (that.loginStatus === false) {
-          if (e.origin === 'http://127.0.0.1:8888' || e.origin === 'http://localhost:8888' || e.origin === 'http://www.hhhbin.com:8888') {
-            that.getUser(e.data)
-            console.log(e.data)
+      window.open(
+        this.githubUrl,
+        'newwindow',
+        'height=500, width=500, top=0, left=0, toolbar=no, menubar=no, scrollbars=no, resizable=no,location=n o, status=no'
+      )
+      window.addEventListener(
+        'message',
+        function (e) {
+          console.log(e)
+          if (that.loginStatus === false) {
+            if (
+              e.origin === 'http://127.0.0.1:8888' ||
+              e.origin === 'http://localhost:8888' ||
+              e.origin === 'http://www.hhhbin.com:8888'
+            ) {
+              that.getUser(e.data)
+              console.log(e.data)
+            }
           }
-        }
-      }, false)
+        },
+        false
+      )
     },
     login () {
       this.$refs.loginFormRef.validate(async valid => {
@@ -315,7 +399,9 @@ export default {
         })
         return
       }
-      const { data: res } = await this.$http.get('emailCode/' + this.registForm.email)
+      const { data: res } = await this.$http.get(
+        'emailCode/' + this.registForm.email
+      )
       if (res.code === 201) {
         this.$alert('验证码已经发送至你的邮箱，有效期两分钟', '提示', {
           confirmButtonText: '确定'
@@ -335,7 +421,10 @@ export default {
           this.$message.error('用户名已经使用，请你修改用户名')
           return
         }
-        const { data: result } = await this.$http.post('register', this.registForm)
+        const { data: result } = await this.$http.post(
+          'register',
+          this.registForm
+        )
         if (result.code === 202) {
           this.$message.success('注册成功')
           this.RegistDialogVisible = false
@@ -351,7 +440,7 @@ export default {
 <style scoped>
 .head {
   height: 55px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.12), 0 0 6px rgba(0, 0, 0, 0.04);
+  box-shadow: 1px 0px 1px #999, 0 0 6px rgba(0, 0, 0, 0.04);
   size: 50px;
 }
 .el-header {
@@ -365,11 +454,11 @@ export default {
   font-size: 30px;
 }
 h1 {
-  margin: 3px;
-  font-size: 35px;
-  color: #606266;
-  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
-    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  display: inline;
+  font-size: 40px;
+  color: #3f3f3f;
+  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB',
+    'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
 }
 .head-but {
   margin-top: 13px;
@@ -400,9 +489,14 @@ h1 {
 .item {
   position: absolute;
   top: 10px;
-  left: 1365px;
+  left: 1410px;
   width: 20px;
   height: 20px;
-   z-index:1000;
+  z-index: 1000;
+}
+.logo {
+  padding-top: 5px;
+  width: 45px;
+  height: 45px;
 }
 </style>

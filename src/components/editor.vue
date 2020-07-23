@@ -1,28 +1,54 @@
 <template>
   <div>
-    <el-input v-model="contentForm.title" class="park" placeholder="标题"></el-input>
-    <div class="park label-select" >
-      <el-tag closable  class ="el-tag-select" v-for="tag in contentForm.label" :key="tag.id" @click="select(tag)" @close="handleClose(tag)">{{tag.name}}</el-tag>
+    <el-input
+      v-model="contentForm.title"
+      class="park"
+      placeholder="标题"
+    ></el-input>
+    <div class="park label-select">
+      <el-tag
+        closable
+        class="el-tag-select"
+        v-for="tag in contentForm.label"
+        :key="tag.id"
+        effect="plain"
+        type="success"
+        @click="select(tag)"
+        @close="handleClose(tag)"
+        >{{ tag.name }}</el-tag
+      >
     </div>
     <el-collapse>
       <el-collapse-item title="点击选择标签" class="park">
         <div class="park">
-      <button v-for="tag in labels" :key="tag.id" @click="select(tag)" class="tag-button">
-      <el-tag  type="success">
-        {{ tag.name }}
-      </el-tag></button>
-      <el-input
-        class="input-new-tag"
-        v-if="inputVisible"
-        v-model="inputValue"
-        ref="saveTagInput"
-        size="small"
-        @keyup.enter.native="handleInputConfirm"
-        @blur="handleInputConfirm"
-      >
-      </el-input>
-      <el-button v-else class="button-new-tag" size="small" @click="showInput">+ 新建</el-button>
-    </div>
+          <button
+            v-for="tag in labels"
+            :key="tag.id"
+            @click="select(tag)"
+            class="tag-button"
+          >
+            <el-tag type="success" effect="plain">
+              {{ tag.name }}
+            </el-tag>
+          </button>
+          <el-input
+            class="input-new-tag"
+            v-if="inputVisible"
+            v-model="inputValue"
+            ref="saveTagInput"
+            size="small"
+            @keyup.enter.native="handleInputConfirm"
+            @blur="handleInputConfirm"
+          >
+          </el-input>
+          <el-button
+            v-else
+            class="button-new-tag"
+            size="small"
+            @click="showInput"
+            >+ 新建</el-button
+          >
+        </div>
       </el-collapse-item>
     </el-collapse>
     <div id="main">
@@ -32,9 +58,15 @@
         ref="md"
         @imgAdd="$imgAdd"
         @imgDel="$imgDel"
+        codeStyle="github-gist"
       />
     </div>
-  <el-button type="success" class="success-button park editor-title" @click="submit"><h1>发                 布</h1></el-button>
+    <el-button
+      type="success"
+      class="success-button park editor-title"
+      @click="submit"
+      ><h1>发 布</h1></el-button
+    >
   </div>
 </template>
 <script>
@@ -67,7 +99,9 @@ export default {
   },
   methods: {
     async getArticle () {
-      const { data: res } = await this.$http.get('article/' + this.contentForm.type)
+      const { data: res } = await this.$http.get(
+        'article/' + this.contentForm.type
+      )
       console.log(res)
       this.contentForm.title = res.data.title
       var i
@@ -140,6 +174,12 @@ export default {
       this.labels = res.data
     },
     $imgAdd (pos, $file) {
+      const loading = this.$loading({
+        lock: true,
+        text: '正在上传',
+        spinner: 'el-icon-loading',
+        background: 'rgba(0, 0, 0, 0.7)'
+      })
       var formdata = new FormData()
       formdata.append('file', $file)
       this.$http({
@@ -150,7 +190,7 @@ export default {
       }).then(res => {
         const _res = res.data
         this.$refs.md.$img2Url(pos, _res.data)
-        console.log(res)
+        loading.close()
       })
     },
     $imgDel (pos) {
@@ -174,17 +214,16 @@ export default {
   padding: 0px;
   border: 0px;
 }
- .input-new-tag {
-    width: 90px;
-    margin-left: 10px;
-    vertical-align: bottom;
-  }
-  .success-button {
-    width: 100%;
-    height: 80px;
-
-  }
-  .v-show-content .scroll-style .scroll-style-border-radius {
+.input-new-tag {
+  width: 90px;
+  margin-left: 10px;
+  vertical-align: bottom;
+}
+.success-button {
+  width: 100%;
+  height: 80px;
+}
+.v-show-content .scroll-style .scroll-style-border-radius {
   background-color: white;
 }
 </style>

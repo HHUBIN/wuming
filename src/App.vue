@@ -1,36 +1,10 @@
 <template>
   <div id="app">
     <router-view/>
-    <!-- <vue-particles
-    color="#000"
-    :particleOpacity="0.7"
-    :particlesNumber="150"
-    shapeType="circle"
-    :particleSize="4"
-    linesColor="#000"
-    :linesWidth="1"
-    :lineLinked="true"
-    :lineOpacity="0.4"
-    :linesDistance="150"
-    :moveSpeed="10"
-    :hoverEffect="true"
-    hoverMode="grab"
-    :clickEffect="true"
-    clickMode="push"
-    >
-    </vue-particles> -->
   </div>
 </template>
 
 <style lang="scss">
-//  #particles-js{
-//   position: absolute;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   z-index:0;
-// }
 body{
   margin: 0px;
 }
@@ -55,4 +29,31 @@ p img {
   max-width:100%;
   max-height:100%;
 }
+.v-show-content{
+  background-color: white !important;
+    padding: 10px 0px !important;
+}
+.v-note-wrapper{
+  border: none !important;
+}
+pre{
+  background-color: white !important;
+  font-size: 110% !important;
+  line-height: 1.1 !important;
+  padding: 20px 0px !important;
+  div{
+    background-color: #f7f7f7 !important;
+    border-radius: 8px !important;
+  }
+}
+// .hljs-params{
+//       color: #0f0bff  !important;
+// }
+// .hljs-keyword{
+//   color: #d14  !important;
+// }
+// .markdown-body {
+//   font-family: "Microsoft YaHei","黑体","宋体",sans-serif !important;
+//   font-weight:545   !important;
+// }
 </style>

@@ -1,5 +1,20 @@
 <template>
   <div>
+    <el-backtop>
+      <div
+        style="{
+        height: 100%;
+        width: 100%;
+        background-color: #f2f5f6;
+        box-shadow: 0 0 6px rgba(0,0,0, .12);
+        text-align: center;
+        line-height: 40px;
+        color: black;
+      }"
+      >
+        UP
+      </div>
+    </el-backtop>
     <el-row style="width:100%">
     <el-col :span="4">
       <div></div>
@@ -9,9 +24,15 @@
         <el-avatar shape="square" :size="40" :src="articleContent.authorImg" class="park user-avatar" ></el-avatar>
       </router-link>
       <el-avatar shape="square" :size="40" v-else src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" class="park user-avatar"></el-avatar>
-      <span class="name" v-if="articleContent.authorName != null">{{articleContent.authorName}}<el-button class="edit-but" size="mini">关                         注</el-button></span>
-      <span class="name" v-else>游客</span>
-      <div class="info">浏览数 ：{{articleContent.view}}        点赞数：{{articleContent.like}}        评论数：{{articleContent.comment}}          创建时间：{{articleContent.createTime}}</div>
+      <span class="name" v-if="articleContent.authorName != null">{{articleContent.authorName}}
+        <span class="edit-but" @click="like(id,0,0,0)"><img  src="../assets/img/点赞.png"  width="35px"/></span>
+        <!-- <el-button class="edit-but" size="small" type="primary">关                         注</el-button> <el-button class="edit-but" size="small" type="primary" @click="like">点                         赞</el-button> -->
+        </span>
+      <span class="name" v-else>游客
+        <span class="edit-but" @click="like(id,0,0,0)"><img  src="../assets/img/点赞.png"  width="35px"/></span>
+      </span>
+      <div class="info">浏览数 ：{{articleContent.view}}        点赞数：{{articleContent.like}}        评论数：{{articleContent.comment}}          发布于：{{articleContent.fromDate}}
+      </div>
       <h1 class="title">{{articleContent.title}}</h1>
         <el-tag
           v-for="item in articleContent.labels"
@@ -21,7 +42,14 @@
           style="margin:5px 5px 5px 0px">
           {{ item.name }}
         </el-tag>
-        <div v-html="articleContent.content" v-highlight style="width:100%"></div>
+         <mavon-editor
+          :value="articleContent.content"
+          :subfield="false"
+          :boxShadow="false"
+          defaultOpen="preview"
+          :toolbarsFlag="false"
+          codeStyle="github-gist"
+        ></mavon-editor>
       <el-row>
         <el-col :span="1">
           <router-link :to="'/'+userInfo.name" v-if="userInfo.name != '' || userInfo.imgUrl != ''">
@@ -57,12 +85,12 @@
                 <div class="author-name" v-else>游客</div>
                 <div style="font-size : 13px;" class="desc">{{item.content}}</div>
                 <div class="article-info">
-                  <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like"></span></a>    点赞数：{{item.likeCount}}    <a href="javascript:void(0);"><span class="el-icon-chat-dot-square el-icon" @click="comment(item.id,index,0)"></span></a>评论数：{{item.commentCount}}          创建时间：{{item.createTime}}
+                  <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like(item.id,index,1,0)"></span></a>    点赞数：{{item.likeCount}}    <a href="javascript:void(0);"><span class="el-icon-chat-dot-square el-icon" @click="comment(item.id,index,0)"></span></a>评论数：{{item.commentCount}}          发布于：{{item.fromDate}}
                   <transition name="el-zoom-in-top">
                   <div v-show="articleContent.commentDTOS[index].show">
                     <el-row style="margin-top:20px">
                       <el-col :span="1">
-                        <el-avatar :size="35" :src="userInfo.imgUrl" shape="square" v-if="userInfo.imgUrl != null"></el-avatar>
+                        <el-avatar :size="35" :src="userInfo.imgUrl" shape="square" v-if="userInfo.name != '' || userInfo.imgUrl != ''"></el-avatar>
                         <el-avatar :size="35" src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" shape="square" v-else></el-avatar>
                       </el-col>
                       <el-col :span="21" style="margin-left:10px">
@@ -73,7 +101,7 @@
                       </el-col>
                     </el-row>
                     <!-- 二级评论 -->
-                    <el-row style="margin-top:20px" v-for="item2 in articleContent.commentDTOS[index].list" :key="item2.id">
+                    <el-row style="margin-top:20px" v-for="(item2 , index2 ) in articleContent.commentDTOS[index].list" :key="item2.id">
                       <el-col :span="1">
                         <router-link :to="'/'+item2.authorName" v-if="item.authorName != null || item2.authorImg != null">
                         <el-avatar :size="35" :src="item2.authorImg" shape="square"></el-avatar>
@@ -85,12 +113,13 @@
                         <div class="author-name" v-else>游客</div>
                           <div style="font-size : 13px" class="desc"><span><a href="">@{{item2.userName}}</a></span>     <span style="color:black">{{item2.content}}</span></div>
                           <div class="article-info">
-                            <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like"></span></a>    点赞数：{{item2.likeCount}}
+                            <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like(item.id,index,2,index2)"></span></a>    点赞数：{{item2.likeCount}}
                               <el-popover
                                 placement="bottom" width="800">
                                 <el-row style="margin-top:20px">
                                 <el-col :span="1">
-                                  <el-avatar :size="35" :src="userInfo.imgUrl" shape="square"></el-avatar>
+                                  <el-avatar :size="35" :src="userInfo.imgUrl" shape="square" v-if="userInfo.name != '' || userInfo.imgUrl != ''"></el-avatar>
+                                  <el-avatar :size="35" src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" shape="square" v-else></el-avatar>
                                 </el-col>
                                 <el-col :span="20" style="margin-left:10px">
                                   <el-input v-model="comment2From.content" :placeholder="'@'+item2.userName"></el-input>
@@ -118,9 +147,6 @@
   </div>
 </template>
 <script>
-import marked from 'marked'
-import 'highlight.js/styles/darcula.css'
-
 export default {
   data () {
     return {
@@ -143,7 +169,8 @@ export default {
         name: '',
         imgUrl: '',
         token: ''
-      }
+      },
+      h: 9
     }
   },
   created () {
@@ -152,9 +179,25 @@ export default {
     this.comment2From.authorId = window.localStorage.getItem('token')
     this.getArticle()
     this.getUserInfo()
-    console.log(this.userInfo)
+    this.$nextTick(() => { // 页面渲染完成后的回调
+      this.h = this.$refs.ed.offsetHeight
+      console.log(this.h)
+    }, 300)
   },
   methods: {
+    async like (id, index, type, index2) {
+      const { data: res } = await this.$http.get('like/' + id)
+      this.$message.success('点赞成功')
+      if (res.data.type === 1) {
+        this.articleContent.like = res.data.count
+      } else {
+        if (type === 1) {
+          this.articleContent.commentDTOS[index].likeCount = res.data.count
+        } else {
+          this.articleContent.commentDTOS[index].list[index2].likeCount = res.data.count
+        }
+      }
+    },
     async getUserInfo () {
       const token = window.localStorage.getItem('token')
       if (token !== null) {
@@ -177,9 +220,6 @@ export default {
           this.articleContent.commentDTOS[index].list = res.data
         }
       }
-    },
-    like () {
-      console.log('hello')
     },
     async submitComment2 (id, index, name) {
       if (this.comment2From.content === '') {
@@ -212,23 +252,22 @@ export default {
       const { data: res } = await this.$http.get('article/' + this.id)
       console.log(res)
       this.articleContent = res.data
-      marked.setOptions({
-        renderer: new marked.Renderer(),
-        pedantic: false,
-        gfm: true,
-        tables: true,
-        breaks: false,
-        sanitize: false,
-        smartLists: true,
-        smartypants: false,
-        xhtml: false
-      })
-      this.articleContent.content = marked(this.articleContent.content)
+      // marked.setOptions({
+      //   renderer: new marked.Renderer(),
+      //   pedantic: false,
+      //   gfm: true,
+      //   tables: true,
+      //   breaks: false,
+      //   sanitize: false,
+      //   smartLists: true,
+      //   smartypants: false,
+      //   xhtml: false
+      // })
+      // this.articleContent.content = marked(this.articleContent.content)
     }
   },
   mounted () {
-    // document.getElementsByTagName('pre').classList.add('hljs')
-    // document.getElementsByClassName('jj').classList.add('hljs')
+
   }
 }
 </script>
@@ -277,8 +316,10 @@ font-size : 20px;
   color: gray;
 }
 .edit-but {
+  cursor:pointer;
+  padding: 3px;
   float: right;
-  margin: 15px 0px 0px 0px;
+  margin: 7px 0px 0px 10px;
 }
 .title {
   font-size: 30px;
@@ -307,4 +348,7 @@ font-size : 20px;
 .desc {
   word-wrap:break-word ;
 }
+/* .editor-view{
+  height: 2352px;
+} */
 </style>

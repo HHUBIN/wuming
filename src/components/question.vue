@@ -5,9 +5,13 @@
     <el-card class="box-card park" :body-style="{ padding: '10px 0px 0px 0px' }" shadow="never">
       <el-avatar shape="square" :size="40" :src="user.imgUrl" class="park user-avatar" v-if="user !== null"></el-avatar>
       <el-avatar shape="square" :size="40" src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" class="park user-avatar" v-else></el-avatar>
-      <span class="name" v-if="user !== null">{{user.name}}<el-button class="edit-but" size="mini">关                         注</el-button></span>
-      <span class="name" v-else>匿名用户<el-button class="edit-but" size="mini">关                         注</el-button></span>
-      <div class="info">回答数：{{questionContent.commentCount}}          创建时间：{{questionContent.createTime}}</div>
+      <span class="name" v-if="user !== null">{{user.name}}
+        <!-- <el-button class="edit-but" size="mini">关                         注</el-button> -->
+        </span>
+      <span class="name" v-else>匿名用户
+        <!-- <el-button class="edit-but" size="mini">关                         注</el-button> -->
+        </span>
+      <div class="info">回答数：{{questionContent.commentCount}}          发布于：{{questionContent.fromDate}}</div>
       <h1 class="title">{{questionContent.content}}</h1>
       <el-collapse>
         <el-collapse-item name="1">
@@ -20,19 +24,20 @@
             ref="md"
             @imgAdd="$imgAdd"
             class="park"
+            codeStyle="androidstudio"
           />
           <el-button @click="answerCommit" class="edit-but" type="success">提交</el-button>
         </el-collapse-item>
       </el-collapse>
     </el-card>
     <!-- 回答 -->
-    <el-card shadow="hover" class="park"  v-for="(item,i1) in answer" :key="item.id" :body-style="{ padding: '10px 10px 0px 10px' }">
+    <el-card shadow="hover"  v-for="(item,i1) in answer" :key="item.id" :body-style="{ padding: '10px 10px 0px 10px' }">
       <router-link :to="'/'+item.user.name" v-if="item.user != null">
         <el-avatar shape="square" :size="35" :src="item.user.imgUrl" class="answer-user-avatar"></el-avatar>
       </router-link>
       <el-avatar shape="square" :size="35" src="https://communityimg.cn-bj.ufileos.com/16f364c5-7e6d-4c0a-b554-c77da6b758fd.jpg?UCloudPublicKey=TOKEN_28669bbe-ba15-425a-a538-a2127d75f03d&Signature=2AgLBQppxzZPlLQk3vdnF%2BTALNg%3D&Expires=1619540019" class="answer-user-avatar" v-else></el-avatar>
-      <span class="answer-name" v-if="item.user !== null">{{item.user.name}}</span>
-      <span class="answer-name" v-else>匿名用户</span>
+      <span class="answer-name" v-if="item.user !== null">{{item.user.name}} </span>
+      <span class="answer-name" v-else>匿名用户 </span>
       <br/>
         <mavon-editor
         id="editor"
@@ -43,13 +48,13 @@
           :toolbarsFlag="false"
           class="view-content"
           previewBackground="#ffffff"
-          codeStyle="routeros"
+          codeStyle="github-gist"
         />
       <el-collapse accordion @change="getComment(item.id,i1)">
 
         <el-collapse-item>
           <template slot="title">
-            <div class="article-info">点赞数：{{item.likeCount}}        评论数：{{item.commentCount}}          创建时间：{{item.createTime}}</div>
+            <div class="article-info">点赞数：{{item.likeCount}}        评论数：{{item.commentCount}}          发布于：{{item.fromDate}}</div>
           </template>
           <el-row>
             <el-col :span="1">
@@ -85,7 +90,7 @@
                 <div class="author-name" v-if="comment.authorName != null">{{comment.authorName}}</div>
                 <div class="author-name" v-else>游客</div>
                 <div style="font-size : 13px" class="desc">{{comment.content}}</div>
-                <div class="article-info"><a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like"></span></a>    点赞数：{{comment.likeCount}}    <a href="javascript:void(0);"><span class="el-icon-chat-dot-square el-icon" @click="getcomment(comment.id,i1,i2,0)"></span></a>评论数：{{comment.commentCount}}          创建时间：{{comment.createTime}}</div>
+                <div class="article-info"><a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like(comment.id,i1,i2,0,1)"></span></a>    点赞数：{{comment.likeCount}}    <a href="javascript:void(0);"><span class="el-icon-chat-dot-square el-icon" @click="getcomment(comment.id,i1,i2,0)"></span></a>评论数：{{comment.commentCount}}          发布于：{{comment.fromDate}}</div>
                 <transition name="el-zoom-in-top" style="margin:20px,20px,20px,20px">
                   <div v-show="answer[i1].comments[i2].show">
                     <el-row style="margin-top:20px">
@@ -102,7 +107,7 @@
                       </el-col>
                     </el-row>
                     <!-- 二级评论 -->
-                    <el-row style="margin-top:20px" v-for="item2 in comment.list" :key="item2.id">
+                    <el-row style="margin-top:20px" v-for="(item2,i3) in comment.list" :key="item2.id">
                       <el-col :span="1">
                         <router-link :to="'/'+item2.authorName" v-if="item2.authorName != null">
                           <el-avatar :size="37" :src="item2.authorImg" shape="square"></el-avatar>
@@ -114,7 +119,7 @@
                         <div class="author-name" v-else>游客</div>
                           <div style="font-size : 13px"><span><a href="">@{{item2.userName}}</a></span>     <span style="color:black" >{{item2.content}}</span></div>
                           <div class="article-info">
-                            <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like"></span></a>    点赞数：{{item2.likeCount}}
+                            <a href="javascript:void(0);"><span class="el-icon-thumb el-icon" @click="like(item2.id,i1,i2,i3,2)"></span></a>    点赞数：{{item2.likeCount}}
                               <el-popover
                                 placement="bottom" width="800">
                                 <el-row style="margin-top:20px">
@@ -131,7 +136,7 @@
                               </el-row>
                                 <a href="javascript:void(0);"  slot="reference"><span class="el-icon-chat-dot-square el-icon"></span></a>
                               </el-popover>回复
-                            创建时间：{{item.createTime}}
+                            发布于：{{item2.fromDate}}
                           </div>
                       </el-col>
                     </el-row>
@@ -189,6 +194,19 @@ export default {
     console.log(this.userInfo)
   },
   methods: {
+    async like (id, i1, i2, i3, type) {
+      const { data: res } = await this.$http.get('like/' + id)
+      this.$message.success('点赞成功')
+      if (res.data.type === 1) {
+        this.item.comments.like = res.data.count
+      } else {
+        if (type === 1) {
+          this.answer[i1].comments[i2].likeCount = res.data.count
+        } else {
+          this.answer[i1].comments[i2].list[i3].likeCount = res.data.count
+        }
+      }
+    },
     async getcomment (id, i1, i2, flag) {
       if (flag === 0) {
         this.answer[i1].comments[i2].show = !this.answer[i1].comments[i2].show
@@ -200,9 +218,6 @@ export default {
           console.log(res.data)
         }
       }
-    },
-    like () {
-      console.log('hello')
     },
     async submitComment2 (id, i1, i2, name) {
       if (this.comment2From.content === '') {
@@ -365,9 +380,6 @@ font-size : 20px;
 }
 .hljs {
   padding: 0px;
-}
-#editor {
-  font-size: 20px;
 }
 .el-card {
   margin: 8px 0px;
